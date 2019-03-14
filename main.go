@@ -16,6 +16,9 @@ import (
 	"syscall"
 )
 
+// VERSION 版本号
+var VERSION = "1.0.0"
+
 // imageMagickConvertPath ImageMagick 包的 convert 工具的路径
 var imageMagickConvertPath = "convert"
 
@@ -72,22 +75,27 @@ type Config struct {
 
 // Init 进行初始化，检查各个命令是否可用。
 func Init(conf Config) error {
-	exitCode, _, err := run(conf.ImageMagickConvertPath, "--version")
+	if conf.ImageMagickConvertPath != "" {
+		imageMagickConvertPath = conf.ImageMagickConvertPath
+	}
+	if conf.ImageMagickIdentifyPath != "" {
+		imageMagickIdentifyPath = conf.ImageMagickIdentifyPath
+	}
+	if conf.PngquantPath != "" {
+		pngquantPath = conf.PngquantPath
+	}
+	exitCode, _, err := run(imageMagickIdentifyPath, "--version")
 	if exitCode != 0 || err != nil {
 		return err
 	}
-	exitCode, _, err = run(conf.ImageMagickIdentifyPath, "--version")
+	exitCode, _, err = run(imageMagickConvertPath, "--version")
 	if exitCode != 0 || err != nil {
 		return err
 	}
-	exitCode, _, err = run(conf.PngquantPath, "--version")
+	exitCode, _, err = run(pngquantPath, "--version")
 	if exitCode != 0 || err != nil {
 		return err
 	}
-
-	imageMagickConvertPath = conf.ImageMagickConvertPath
-	imageMagickIdentifyPath = conf.ImageMagickIdentifyPath
-	pngquantPath = conf.PngquantPath
 	showDebug = conf.ShowDebug
 	showError = conf.ShowError
 	if showDebug {
@@ -119,7 +127,7 @@ func Info(file string) (ImageInfo, error) {
 	info := ImageInfo{}
 	fi, err := os.Stat(file)
 	if err == nil {
-		format := `{"w":%[w],"h":%[h],"m":"%[m]"}` //,"size":%[B]}	B=文件字节数，在7.0版本之前不支持
+		format := `{"w":%[width],"h":%[height],"m":"%[magick]"}` //,"size":%[B]}	B=文件字节数，在7.0版本之前不支持
 		exitCode, output, runerr := run(imageMagickIdentifyPath, "-format", format, file)
 		if exitCode == 0 {
 			if showDebug {
