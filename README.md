@@ -21,7 +21,7 @@ go get github.com/jifengg/GoImageUtil
 
 # usage 使用
 
-可参考[`test/test.go`](./test/test.go)；
+可参考[`GoImageUtilDemo`](https://github.com/jifengg/GoImageUtilDemo)；
 
 ```go
 import (
