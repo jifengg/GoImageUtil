@@ -25,7 +25,7 @@ go get github.com/jifengg/GoImageUtil
 
 ```go
 import (
-	iu "githup.com/jifengg/GoImageUtil"
+	iu "github.com/jifengg/GoImageUtil"
 )
 //修改命令行工具的位置，可以使用相对路径，也可以使用绝对路径。
 //Init并非必须要调用的方法，但是可以使用此方法测试命令行工具是否可用。
